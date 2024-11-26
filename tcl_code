@@ -1,0 +1,26 @@
+# Open the input and output files
+set input_file "data.txt"
+set output_file "file_output.txt"
+# Open files
+set fin [open $input_file r]
+set fout [open $output_file w]
+# Read lines from the input file
+set data [read $fin]
+close $fin
+# Split the content into lines
+set lines [split $data "\n"]
+# Write header to the output file
+puts $fout [format "%-10s %-10s %-10s %-10s" "Name" "Trans" "Load" "Delay"]
+puts $fout "----------------------------------------"
+# Loop through each line of data (skip header lines)
+foreach line $lines {
+    if {[regexp {^(AND|NAND)\S+\s+\S+\s+\S+\s+\S+} $line]} {
+        # Split the columns based on spaces
+        set cols [regexp -all -inline {\S+} $line]
+        # Rearrange columns and write them in aligned format
+        puts $fout [format "%-10s %-10s %-10s %-10s" [lindex $cols 0] [lindex $cols 2] [lindex $cols 3] [lindex $cols 1]]
+    }
+}
+# Close the output file
+close $fout
+puts "Data rearranged and written to $output_file"
